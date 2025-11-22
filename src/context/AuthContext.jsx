@@ -3,7 +3,7 @@ import { saveAccessLog } from '../utils/db';
 
 const AuthContext = createContext(null);
 
-const SESSION_TIMEOUT = 10 * 60 * 1000; // 10 minutes in milliseconds
+const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
