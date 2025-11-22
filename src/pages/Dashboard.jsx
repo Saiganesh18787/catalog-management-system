@@ -77,9 +77,9 @@ export default function Dashboard() {
                                         <p className="text-sm text-gray-500 truncate">{product.category}</p>
                                     </div>
                                     <div className="text-right">
-                                        <p className="font-medium text-gray-900">${product.sellPrice}</p>
+                                        <p className="font-medium text-gray-900">₹{product.sellPrice}</p>
                                         <p className="text-xs text-green-600">
-                                            +${(product.sellPrice - product.buyPrice).toFixed(2)}
+                                            +₹{(product.sellPrice - product.buyPrice).toFixed(2)}
                                         </p>
                                     </div>
                                 </div>

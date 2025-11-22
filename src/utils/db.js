@@ -86,4 +86,24 @@ export const saveEvents = async (events) => {
     }
 };
 
+export const getAccessLogs = async () => {
+    try {
+        const logs = await db.getItem('access_logs');
+        return logs || [];
+    } catch (error) {
+        console.error('Error fetching access logs:', error);
+        return [];
+    }
+};
+
+export const saveAccessLog = async (log) => {
+    try {
+        const logs = await getAccessLogs();
+        const newLogs = [log, ...logs];
+        await db.setItem('access_logs', newLogs);
+    } catch (error) {
+        console.error('Error saving access log:', error);
+    }
+};
+
 export default db;

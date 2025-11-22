@@ -162,7 +162,7 @@ export default function ProductForm() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input
-              label="Buy Price ($)"
+              label="Buy Price (₹)"
               name="buyPrice"
               type="number"
               step="0.01"
@@ -173,7 +173,7 @@ export default function ProductForm() {
             />
 
             <Input
-              label="Sell Price ($)"
+              label="Sell Price (₹)"
               name="sellPrice"
               type="number"
               step="0.01"

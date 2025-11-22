@@ -70,17 +70,17 @@ export default function ProductDetails() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-gray-500">Buy Price</p>
-                                <p className="text-xl font-medium text-gray-900">${product.buyPrice?.toFixed(2)}</p>
+                                <p className="text-xl font-medium text-gray-900">₹{product.buyPrice?.toFixed(2)}</p>
                             </div>
                             <div>
                                 <p className="text-sm text-gray-500">Sell Price</p>
-                                <p className="text-xl font-bold text-green-600">${product.sellPrice?.toFixed(2)}</p>
+                                <p className="text-xl font-bold text-green-600">₹{product.sellPrice?.toFixed(2)}</p>
                             </div>
                         </div>
                         <div className="pt-4 border-t border-gray-100">
                             <p className="text-sm text-gray-500">Profit Margin</p>
                             <p className="text-lg font-medium text-blue-600">
-                                ${(product.sellPrice - product.buyPrice).toFixed(2)}
+                                ₹{(product.sellPrice - product.buyPrice).toFixed(2)}
                                 <span className="text-sm text-gray-400 ml-1">
                                     ({((product.sellPrice - product.buyPrice) / product.sellPrice * 100).toFixed(1)}%)
                                 </span>

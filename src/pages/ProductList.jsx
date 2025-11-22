@@ -121,7 +121,7 @@ export default function ProductList() {
                                     <h3 className="font-semibold text-lg text-gray-900">{product.name}</h3>
                                     <span className="text-sm text-gray-500">{product.category}</span>
                                 </div>
-                                <span className="font-bold text-green-600">${product.sellPrice}</span>
+                                <span className="font-bold text-green-600">₹{product.sellPrice}</span>
                             </div>
                             <div className="mt-auto pt-4 flex justify-end gap-2">
                                 <Link to={`/products/${product.id}/edit`}>
