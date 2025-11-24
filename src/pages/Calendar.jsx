@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus, Trash2, Receipt } from 'lucide-react';
 import { useSales } from '../context/SalesContext';
+import { useBills } from '../context/BillContext';
 import Button from '../components/Button';
 
 export default function Calendar() {
@@ -9,6 +10,7 @@ export default function Calendar() {
     const [holidays, setHolidays] = useState([]);
     const [selectedDate, setSelectedDate] = useState(null);
     const { events, addEvent, removeEvent } = useSales();
+    const { bills } = useBills();
 
     useEffect(() => {
         const fetchHolidays = async () => {
@@ -43,6 +45,11 @@ export default function Calendar() {
     const getEventForDate = (date) => {
         const dateStr = format(date, 'yyyy-MM-dd');
         return events[dateStr];
+    };
+
+    const getBillsForDate = (date) => {
+        const dateStr = format(date, 'yyyy-MM-dd');
+        return bills.filter(b => b.date === dateStr);
     };
 
     const handleAddEvent = () => {
@@ -94,6 +101,7 @@ export default function Calendar() {
                     {calendarDays.map((day, dayIdx) => {
                         const holiday = getHolidayForDate(day);
                         const event = getEventForDate(day);
+                        const dayBills = getBillsForDate(day);
                         const isSelected = selectedDate && isSameDay(day, selectedDate);
                         const isCurrentMonth = isSameMonth(day, monthStart);
 
@@ -123,6 +131,12 @@ export default function Calendar() {
                                             {event}
                                         </div>
                                     )}
+                                    {dayBills.map(bill => (
+                                        <div key={bill.id} className="text-xs p-1 bg-green-50 text-green-700 rounded border border-green-100 truncate flex items-center gap-1" title={`${bill.storeName} - ₹${bill.amount}`}>
+                                            <Receipt size={10} />
+                                            {bill.storeName}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         );
@@ -142,6 +156,18 @@ export default function Calendar() {
                                 <p className="text-blue-600 text-sm">Event: {getEventForDate(selectedDate)}</p>
                             ) : (
                                 <p className="text-gray-500 text-sm">No custom events.</p>
+                            )}
+
+                            {getBillsForDate(selectedDate).length > 0 && (
+                                <div className="mt-2 pt-2 border-t border-gray-100">
+                                    <p className="text-xs font-semibold text-gray-500 mb-1">Bills:</p>
+                                    {getBillsForDate(selectedDate).map(bill => (
+                                        <div key={bill.id} className="flex items-center justify-between text-sm bg-green-50 p-2 rounded text-green-800 mb-1">
+                                            <span>{bill.storeName}</span>
+                                            <span className="font-medium">₹{bill.amount}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             )}
                         </div>
                     </div>

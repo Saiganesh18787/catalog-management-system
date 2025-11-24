@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Package, Settings, PlusCircle, Calendar, TrendingUp, Shield, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Settings, PlusCircle, Calendar, TrendingUp, Shield, LogOut, Receipt } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import clsx from 'clsx';
 
@@ -12,6 +12,7 @@ export default function Sidebar({ className }) {
         { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { to: '/calendar', icon: Calendar, label: 'Calendar' },
         { to: '/sales', icon: TrendingUp, label: 'Sales Entry' },
+        { to: '/bills', icon: Receipt, label: 'Bills' },
         { to: '/products', icon: Package, label: 'Products' },
         { to: '/products/new', icon: PlusCircle, label: 'Add Product' },
         { to: '/access-logs', icon: Shield, label: 'Access Logs' },

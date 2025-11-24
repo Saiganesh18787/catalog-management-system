@@ -43,6 +43,20 @@ This document outlines the chronological development of the Catalog Management S
 - [x] **Timeline Tracking**: Documented the development phases (this file).
 - [x] **Code Push**: Deployed code to the remote repository.
 
+### Phase 6: Advanced Export & Polish
+**Goal**: Enhance data portability and user experience.
+- [x] **Export Fixes**: Fixed JSON export functionality in Settings.
+- [x] **Bulk Actions**: Added "Select All" capability for product management.
+- [x] **PDF Export**: Implemented customizable PDF export with image support and field selection.
+
+### Phase 7: Bill Management
+**Goal**: Track expenses and manage bills.
+- [x] **Bill Context**: Created state management for bills.
+- [x] **Bill Management UI**: Built interface for adding, listing, and filtering bills.
+- [x] **Image Handling**: Added support for bill image uploads.
+- [x] **Reporting**: Implemented PDF and JSON export for bills.
+- [x] **Calendar Integration**: Integrated bills into the main calendar view.
+
 ## 🚀 Key Features Summary
 
 | Feature | Description | Status |
@@ -55,6 +69,8 @@ This document outlines the chronological development of the Catalog Management S
 | **Access Logs** | Audit trail for security events. | ✅ Completed |
 | **Responsive UI** | Mobile-friendly design using Tailwind CSS. | ✅ Completed |
 | **Offline Capable** | Uses local storage for data persistence. | ✅ Completed |
+| **PDF Export** | Customizable product catalog export. | ✅ Completed |
+| **Bill Management** | Track bills, upload images, and generate reports. | ✅ Completed |
 
 ---
 *Last Updated: November 22, 2025*

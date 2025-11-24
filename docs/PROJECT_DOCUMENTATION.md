@@ -59,6 +59,11 @@ The **Catalog Management System** is a modern web application designed to help b
     - **Multiple Images**: Support for adding multiple product images.
     - **Rich Description**: Detailed product descriptions.
 - **Product Details**: View individual product specifications and stock status.
+- **Bulk Actions**: "Select All" functionality to easily select multiple products.
+- **Export Options**:
+    - **JSON Export**: Export selected products to a JSON file.
+    - **PDF Export**: Generate a customizable PDF catalog of selected products.
+    - **Customizable Fields**: Choose which details (Image, Name, Category, Buy Price, Sell Price, Description) to include in the PDF.
 
 ### 3.4 Sales Management
 - **Sales Entry**: Record daily sales data.
@@ -67,9 +72,23 @@ The **Catalog Management System** is a modern web application designed to help b
 
 ### 3.5 Calendar
 - **Event Tracking**: Manage business events, deadlines, or sales periods.
+- **Bill Integration**: Automatically displays bills on their respective dates.
 
-### 3.6 Settings
+### 3.6 Bill Management
+- **Bill Entry**: Record bills with Store Name, Date, Amount, and optional Image.
+- **Image Support**: Upload or capture bill images for digital storage.
+- **Status Tracking**: Mark bills as "Paid" or "Pending".
+- **Reporting**:
+    - **PDF Report**: Generate reports for specific dates, months, or custom ranges.
+    - **JSON Export**: Export bill data for external processing.
+- **Filtering**: Filter bills by Store Name or Date.
+
+### 3.7 Settings
 - **Configuration**: Manage application settings (e.g., profit margins, expense thresholds).
+- **Data Management**:
+    - **Export Catalog**: Download the entire product catalog as a JSON file.
+    - **Import Catalog**: Restore or add products from a JSON file.
+    - **Clear Data**: Reset the application data (use with caution).
 
 ## 4. User Guide
 

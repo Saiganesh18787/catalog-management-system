@@ -1,15 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Plus, Filter, Download, Trash2, Edit } from 'lucide-react';
+import { Search, Plus, Filter, Download, Trash2, Edit, FileText } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import { useProducts } from '../context/ProductContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Card from '../components/Card';
+import ExportOptionsModal from '../components/ExportOptionsModal';
 
 export default function ProductList() {
     const { products, deleteProduct } = useProducts();
     const [search, setSearch] = useState('');
     const [selectedProducts, setSelectedProducts] = useState(new Set());
+    const [showExportModal, setShowExportModal] = useState(false);
 
     const [categoryFilter, setCategoryFilter] = useState('');
 
@@ -37,7 +40,15 @@ export default function ProductList() {
         setSelectedProducts(newSelected);
     };
 
-    const handleExport = () => {
+    const toggleSelectAll = () => {
+        if (selectedProducts.size === filteredProducts.length) {
+            setSelectedProducts(new Set());
+        } else {
+            setSelectedProducts(new Set(filteredProducts.map(p => p.id)));
+        }
+    };
+
+    const handleExportJSON = () => {
         const productsToExport = products.filter(p => selectedProducts.has(p.id));
         if (productsToExport.length === 0) return;
 
@@ -46,10 +57,96 @@ export default function ProductList() {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = "catalog_export.json";
+        link.download = `products_export_${new Date().toISOString().split('T')[0]}.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    const handleExportPDF = (options) => {
+        const productsToExport = products.filter(p => selectedProducts.has(p.id));
+        if (productsToExport.length === 0) return;
+
+        const doc = new jsPDF();
+
+        // Add title
+        doc.setFontSize(18);
+        doc.text("Product Catalog Export", 14, 22);
+        doc.setFontSize(11);
+        doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 30);
+
+        let yPos = 40;
+        const pageHeight = doc.internal.pageSize.height;
+
+        productsToExport.forEach((product, index) => {
+            // Check if we need a new page (assuming approx 40 units per item)
+            if (yPos > pageHeight - 40) {
+                doc.addPage();
+                yPos = 20;
+            }
+
+            let xOffset = 14;
+
+            // Image
+            if (options.image) {
+                if (product.image) {
+                    try {
+                        doc.addImage(product.image, 'JPEG', xOffset, yPos, 30, 20);
+                    } catch (e) {
+                        console.error("Error adding image to PDF", e);
+                        doc.rect(xOffset, yPos, 30, 20); // Placeholder if image fails
+                        doc.setFontSize(8);
+                        doc.text("No Image", xOffset + 2, yPos + 10);
+                    }
+                } else {
+                    doc.rect(xOffset, yPos, 30, 20); // Placeholder box
+                    doc.setFontSize(8);
+                    doc.text("No Image", xOffset + 2, yPos + 10);
+                }
+                xOffset += 35; // Shift text to the right if image is present
+            }
+
+            // Text details
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+
+            if (options.name) {
+                doc.text(`${index + 1}. ${product.name}`, xOffset, yPos + 8);
+            }
+
+            doc.setFontSize(10);
+            doc.setFont(undefined, 'normal');
+
+            let detailsY = yPos + 15;
+
+            if (options.category) {
+                doc.text(`Category: ${product.category || 'N/A'}`, xOffset, detailsY);
+                xOffset += 50;
+            }
+
+            if (options.buyPrice) {
+                doc.text(`Buy Price: ${product.buyPrice}`, xOffset, detailsY);
+                xOffset += 40;
+            }
+
+            if (options.sellPrice) {
+                doc.text(`Sell Price: ${product.sellPrice}`, xOffset, detailsY);
+                xOffset += 40;
+            }
+
+            if (options.description && product.description) {
+                detailsY += 7;
+                // Reset xOffset for description to align with image or start
+                const descX = options.image ? 49 : 14;
+                const splitDesc = doc.splitTextToSize(product.description, 180 - (options.image ? 35 : 0));
+                doc.text(splitDesc, descX, detailsY);
+                yPos += (splitDesc.length * 5);
+            }
+
+            yPos += 30; // Move down for next item
+        });
+
+        doc.save(`products_export_${new Date().toISOString().split('T')[0]}.pdf`);
     };
 
     return (
@@ -58,10 +155,16 @@ export default function ProductList() {
                 <h1 className="text-2xl font-bold text-gray-900">Products</h1>
                 <div className="flex gap-2">
                     {selectedProducts.size > 0 && (
-                        <Button variant="secondary" onClick={handleExport} className="flex items-center gap-2">
-                            <Download size={18} />
-                            Export ({selectedProducts.size})
-                        </Button>
+                        <>
+                            <Button variant="secondary" onClick={handleExportJSON} className="flex items-center gap-2">
+                                <Download size={18} />
+                                JSON ({selectedProducts.size})
+                            </Button>
+                            <Button variant="secondary" onClick={() => setShowExportModal(true)} className="flex items-center gap-2">
+                                <FileText size={18} />
+                                PDF ({selectedProducts.size})
+                            </Button>
+                        </>
                     )}
                     <Link to="/products/new">
                         <Button className="flex items-center gap-2">
@@ -82,8 +185,8 @@ export default function ProductList() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-                <div className="w-full md:w-64">
-                    <div className="relative">
+                <div className="w-full md:w-64 flex gap-2">
+                    <div className="relative flex-1">
                         <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                         <select
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white"
@@ -96,6 +199,15 @@ export default function ProductList() {
                             ))}
                         </select>
                     </div>
+                    {filteredProducts.length > 0 && (
+                        <Button
+                            variant="secondary"
+                            onClick={toggleSelectAll}
+                            className={`whitespace-nowrap ${selectedProducts.size === filteredProducts.length && selectedProducts.size > 0 ? 'bg-blue-100 text-blue-700 border-blue-200' : ''}`}
+                        >
+                            {selectedProducts.size === filteredProducts.length && selectedProducts.size > 0 ? 'Deselect All' : 'Select All'}
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -121,7 +233,14 @@ export default function ProductList() {
                                     <h3 className="font-semibold text-lg text-gray-900">{product.name}</h3>
                                     <span className="text-sm text-gray-500">{product.category}</span>
                                 </div>
-                                <span className="font-bold text-green-600">₹{product.sellPrice}</span>
+                                <div className="text-right">
+                                    <span className="font-bold text-green-600 block">₹{product.sellPrice}</span>
+                                    {product.profitMargin !== undefined && (
+                                        <span className={`text-xs font-medium ${product.profitMargin >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                            {product.profitMargin}% Markup
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                             <div className="mt-auto pt-4 flex justify-end gap-2">
                                 <Link to={`/products/${product.id}/edit`}>
@@ -148,6 +267,11 @@ export default function ProductList() {
                     </div>
                 )}
             </div>
-        </div>
+            <ExportOptionsModal
+                isOpen={showExportModal}
+                onClose={() => setShowExportModal(false)}
+                onConfirm={handleExportPDF}
+            />
+        </div >
     );
 }

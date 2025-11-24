@@ -5,6 +5,7 @@ import { useProducts } from '../context/ProductContext';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import CameraCapture from '../components/CameraCapture';
+import { compressImage } from '../utils/imageOptimizer';
 
 export default function ProductForm() {
   const { id } = useParams();
@@ -38,14 +39,21 @@ export default function ProductForm() {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: null }));
   };
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({ ...prev, image: reader.result }));
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedImage = await compressImage(file);
+        setFormData(prev => ({ ...prev, image: compressedImage }));
+      } catch (error) {
+        console.error("Error compressing image:", error);
+        // Fallback to original if compression fails (though unlikely)
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setFormData(prev => ({ ...prev, image: reader.result }));
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 

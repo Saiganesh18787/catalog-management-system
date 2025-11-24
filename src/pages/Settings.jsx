@@ -50,9 +50,9 @@ export default function Settings() {
 
     const handleImport = async () => {
         try {
-            await importCatalog(jsonInput);
+            const result = await importCatalog(JSON.parse(jsonInput));
             setJsonInput('');
-            alert('Catalog imported successfully!');
+            alert(`Import successful!\nAdded: ${result.added}\nUpdated: ${result.updated}\nSkipped (Duplicate Name): ${result.skipped}`);
         } catch (error) {
             alert('Error importing catalog: ' + error.message);
         }
@@ -67,9 +67,9 @@ export default function Settings() {
             try {
                 const data = JSON.parse(e.target.result);
                 if (Array.isArray(data)) {
-                    if (window.confirm(`Import ${data.length} products? This will add them to your current catalog.`)) {
-                        await importCatalog(data);
-                        alert('Import successful!');
+                    if (window.confirm(`Import ${data.length} products? This will add new products and update existing ones.`)) {
+                        const result = await importCatalog(data);
+                        alert(`Import successful!\nAdded: ${result.added}\nUpdated: ${result.updated}\nSkipped (Duplicate Name): ${result.skipped}`);
                     }
                 } else {
                     alert('Invalid file format. Expected an array of products.');

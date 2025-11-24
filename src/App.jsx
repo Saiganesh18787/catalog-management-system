@@ -10,8 +10,10 @@ import SalesEntry from './pages/SalesEntry';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import AccessLogs from './pages/AccessLogs';
+import BillManagement from './pages/BillManagement';
 import { ProductProvider } from './context/ProductContext';
 import { SalesProvider } from './context/SalesContext';
+import { BillProvider } from './context/BillContext';
 import { AuthProvider } from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -22,37 +24,47 @@ function App() {
       <AuthProvider>
         <ProductProvider>
           <SalesProvider>
-            <Router>
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<Navigate to="/dashboard" replace />} />
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="calendar" element={<Calendar />} />
-                  <Route
-                    path="sales"
-                    element={
-                      <PrivateRoute>
-                        <SalesEntry />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route
-                    path="access-logs"
-                    element={
-                      <PrivateRoute>
-                        <AccessLogs />
-                      </PrivateRoute>
-                    }
-                  />
-                  <Route path="products" element={<ProductList />} />
-                  <Route path="products/new" element={<ProductForm />} />
-                  <Route path="products/:id" element={<ProductDetails />} />
-                  <Route path="products/:id/edit" element={<ProductForm />} />
-                  <Route path="settings" element={<Settings />} />
-                </Route>
-              </Routes>
-            </Router>
+            <BillProvider>
+              <Router>
+                <Routes>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/" element={<Layout />}>
+                    <Route index element={<Navigate to="/dashboard" replace />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="calendar" element={<Calendar />} />
+                    <Route
+                      path="sales"
+                      element={
+                        <PrivateRoute>
+                          <SalesEntry />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="access-logs"
+                      element={
+                        <PrivateRoute>
+                          <AccessLogs />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="bills"
+                      element={
+                        <PrivateRoute>
+                          <BillManagement />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route path="products" element={<ProductList />} />
+                    <Route path="products/new" element={<ProductForm />} />
+                    <Route path="products/:id" element={<ProductDetails />} />
+                    <Route path="products/:id/edit" element={<ProductForm />} />
+                    <Route path="settings" element={<Settings />} />
+                  </Route>
+                </Routes>
+              </Router>
+            </BillProvider>
           </SalesProvider>
         </ProductProvider>
       </AuthProvider>

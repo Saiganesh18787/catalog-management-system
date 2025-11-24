@@ -19,6 +19,12 @@ export default function Dashboard() {
         .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
         .slice(0, 5);
 
+    const avgMargin = useMemo(() => {
+        if (products.length === 0) return 0;
+        const totalMargin = products.reduce((sum, p) => sum + (p.profitMargin || 0), 0);
+        return (totalMargin / products.length).toFixed(1);
+    }, [products]);
+
     return (
         <div className="space-y-6">
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
@@ -48,6 +54,13 @@ export default function Dashboard() {
                     subValue={monthlyStats.netProfit > 0 ? "Profitable" : "Loss"}
                     icon={DollarSign}
                     color={monthlyStats.netProfit > 0 ? "green" : "red"}
+                />
+                <StatCard
+                    title="Avg Markup"
+                    value={`${avgMargin}%`}
+                    subValue="Across all products"
+                    icon={TrendingUp}
+                    color="purple"
                 />
             </div>
 

@@ -106,4 +106,22 @@ export const saveAccessLog = async (log) => {
     }
 };
 
+export const getBills = async () => {
+    try {
+        const bills = await db.getItem('bills');
+        return bills || [];
+    } catch (error) {
+        console.error('Error fetching bills:', error);
+        return [];
+    }
+};
+
+export const saveBills = async (bills) => {
+    try {
+        await db.setItem('bills', bills);
+    } catch (error) {
+        console.error('Error saving bills:', error);
+    }
+};
+
 export default db;
