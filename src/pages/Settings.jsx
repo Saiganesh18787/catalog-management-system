@@ -135,19 +135,21 @@ export default function Settings() {
 
                     <div className="border-t border-gray-100 pt-6">
                         <h3 className="text-sm font-medium text-gray-700 mb-2">Import Catalog</h3>
-                        <p className="text-sm text-gray-500 mb-3">Upload a JSON file or paste data below.</p>
+                        <p className="text-sm text-gray-500 mb-1">Upload a JSON file or paste data below.</p>
+                        <p className="text-xs text-blue-600 mb-3">📱 Mobile tip: Make sure the JSON file is in your Downloads or Files app</p>
 
                         <div className="flex gap-4 mb-4">
                             <input
                                 type="file"
-                                accept=".json"
+                                accept="application/json,.json,text/json"
                                 ref={fileInputRef}
                                 onChange={handleFileImport}
                                 className="hidden"
+                                id="json-file-input"
                             />
                             <Button variant="secondary" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2">
                                 <Upload size={20} />
-                                Upload File
+                                Choose JSON File
                             </Button>
                         </div>
 
