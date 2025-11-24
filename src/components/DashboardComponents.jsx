@@ -1,3 +1,7 @@
+import React from 'react';
+import Card from './Card';
+import { Database } from 'lucide-react';
+
 function StatCard({ title, value, subValue, icon: Icon, color }) {
     const colorClasses = {
         blue: "bg-blue-50 text-blue-600",
