@@ -1,14 +1,25 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { DollarSign, Package, TrendingUp, AlertCircle, Download } from 'lucide-react';
+import { DollarSign, Package, TrendingUp, AlertCircle, Download, Database, HardDrive } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
 import { useSales } from '../context/SalesContext';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import { calculateStorageUsage, formatBytes } from '../utils/storageCalculator';
+import { StatCard, StorageItem } from '../components/DashboardComponents';
 
 export default function Dashboard() {
     const { products } = useProducts();
     const { getMonthlyStats } = useSales();
+    const [storageData, setStorageData] = useState(null);
+
+    useEffect(() => {
+        const loadStorage = async () => {
+            const data = await calculateStorageUsage();
+            setStorageData(data);
+        };
+        loadStorage();
+    }, [products]); // Recalculate when products change
 
     const monthlyStats = useMemo(() => {
         const now = new Date();
@@ -131,28 +142,53 @@ export default function Dashboard() {
                     </div>
                 </Card>
             </div>
+
+            {/* Storage Usage */}
+            <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                        <HardDrive size={20} className="text-gray-600" />
+                        <h2 className="text-lg font-semibold text-gray-900">Storage Usage</h2>
+                    </div>
+                    {storageData && (
+                        <span className="text-sm font-medium text-gray-600">
+                            Total: {formatBytes(storageData.total)}
+                        </span>
+                    )}
+                </div>
+                {storageData ? (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <StorageItem
+                            label="Products"
+                            size={formatBytes(storageData.products.size)}
+                            count={storageData.products.count}
+                            color="blue"
+                        />
+                        <StorageItem
+                            label="Bills"
+                            size={formatBytes(storageData.bills.size)}
+                            count={storageData.bills.count}
+                            color="green"
+                        />
+                        <StorageItem
+                            label="Sales"
+                            size={formatBytes(storageData.sales.size)}
+                            count={storageData.sales.count}
+                            color="purple"
+                        />
+                        <StorageItem
+                            label="Access Logs"
+                            size={formatBytes(storageData.logs.size)}
+                            count={storageData.logs.count}
+                            color="orange"
+                        />
+                    </div>
+                ) : (
+                    <div className="text-center py-4 text-gray-500">
+                        Calculating storage...
+                    </div>
+                )}
+            </Card>
         </div>
-    );
-}
-
-function StatCard({ title, value, subValue, icon: Icon, color }) {
-    const colorClasses = {
-        blue: "bg-blue-50 text-blue-600",
-        green: "bg-green-50 text-green-600",
-        orange: "bg-orange-50 text-orange-600",
-        purple: "bg-purple-50 text-purple-600",
-    };
-
-    return (
-        <Card className="p-6 flex items-start justify-between">
-            <div>
-                <p className="text-sm font-medium text-gray-500">{title}</p>
-                <h3 className="text-2xl font-bold text-gray-900 mt-1">{value}</h3>
-                {subValue && <p className="text-sm text-green-600 mt-1">{subValue}</p>}
-            </div>
-            <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
-                <Icon size={24} />
-            </div>
-        </Card>
     );
 }
